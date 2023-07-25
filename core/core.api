@@ -1,0 +1,85 @@
+service core-api {
+	@handler UserLogin
+	get /user/login(LoginRequest) returns (LoginReply)
+
+	@handler UserDetails
+	get /user/detail(UserDetailRequest) returns (UserDetailReply)
+
+	@handler MailCodeSendRegister
+	get /mail/code/send/register(MailCodeSendRegisterRequest) returns (MailCodeSendRegisterReply)
+
+	@handler UserRegister
+	post /user/register(UserRegisterRequest) returns (UserRegisterReply)
+
+}
+
+@server (
+	middleware: Auth
+)
+service core-api {
+	// 用户文件上传
+	@handler FileUpLoad
+	post /file/upload(FileUploadRequest) returns (FileUploadReply)
+
+	// 用户文件的关联存储
+	@handler UserRepositorySave
+	post /user/repository/save(UserRepositorySaveRequest) returns (UserRepositorySaveReply)
+
+}
+
+type FileUploadRequest {
+	Hash string `json:"hash,optional"`
+	Name string `json:"name,optional"`
+	Ext  string `json:"ext,optional"`
+	Size int64  `json:"size,optional"`
+	Path string `json:"path,optional"`
+}
+
+type FileUploadReply {
+	Identity string `json:"identity"`
+	Ext      string `json:"ext"`
+	Name     string `json:"name"`
+}
+
+type LoginRequest {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type LoginReply {
+	Token string `json:"token"`
+}
+
+type UserDetailRequest {
+	Identity string `json:"identity"`
+}
+
+type UserDetailReply {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type MailCodeSendRegisterRequest {
+	Email string `json:"email"`
+}
+
+type MailCodeSendRegisterReply {
+}
+
+type UserRegisterRequest {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	Code     string `json:"code"`
+}
+
+type UserRegisterReply {}
+
+type UserRepositorySaveRequest {
+	ParentId           int64  `json:"parentId"`
+	RepositoryIdentity string `json:"repositoryIdentity"`
+	Ext                string `json:"ext"`
+	Name               string `json:"name"`
+}
+
+type UserRepositorySaveReply {}
